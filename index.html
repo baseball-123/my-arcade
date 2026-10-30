@@ -477,17 +477,26 @@
       .menu-card .panel { border: 0; padding: 0; margin: 0; }
       .menu-card h2 { margin-top: 0; }
       .menu-card .conditions { margin-bottom: 16px; }
+      #multiplayerPanel input { display: block; width: 100%; margin: 6px 0 16px; padding: 10px; background: #203e46; color: #fff; border: 1px solid #688b8b; border-radius: 8px; font: inherit; }
+      #multiplayerPanel label { font-size: 13px; }
+      .room-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 20px; }
+      #createRoom { background: #e9bb72; color: #2c3022; }
+      #multiplayerPanel .hint, #multiplayerStatus { overflow-wrap: anywhere; }
+      #playerList { padding-left: 20px; font-size: 13px; line-height: 1.8; }
+      #multiplayerBadge { position: absolute; top: 106px; right: 16px; background: #102c34dd; border: 1px solid #7da7a775; border-radius: 9px; padding: 8px 12px; font-size: 11px; pointer-events: none; }
+      .peer-label { position: absolute; transform: translate(-50%, -100%); color: #fff; background: #153e49dd; border: 1px solid #9be3d3; border-radius: 8px; padding: 4px 8px; font-size: 11px; pointer-events: none; white-space: nowrap; }
       #saveNote { position: absolute; top: 146px; left: 16px; max-width: 220px; padding: 0; font-size: 10px; pointer-events: none; }
       @media (max-width: 650px) {
         .game-toolbar { top: 56px; left: auto; right: 12px; transform: none; flex-wrap: wrap; justify-content: flex-end; max-width: 240px; }
-        .scene-label { top: 105px; max-width: calc(100% - 32px); }
-        .view-tools { top: 145px; }
+        .scene-label { top: 148px; max-width: calc(100% - 32px); }
+        .view-tools { top: 188px; }
+        #multiplayerBadge { top: 188px; right: 12px; }
         #saveNote { display: none; }
         .controls { padding: 9px; bottom: 6px; }
         .steering { gap: 4px; }
         .steering button { padding: 7px 9px; font-size: 11px; }
         .steering span { width: 100%; margin: 0; font-size: 10px; }
-        .game-menu { inset: 98px 4px 4px; padding: 4px; }
+        .game-menu { inset: 138px 4px 4px; padding: 4px; }
         .menu-card { padding: 16px; }
       }
       @media (max-height: 500px) {
@@ -525,15 +534,37 @@
               ><button id="resetCamera" type="button">Reset view</button>
             </div>
             <div class="scene-label" id="sceneLabel">OPEN OCEAN · FREEPLAY</div>
+            <div id="multiplayerBadge" hidden></div>
             <nav class="game-toolbar" aria-label="Game menus">
               <button data-panel="shop">Shop</button>
               <button data-panel="collection">Collection</button>
               <button data-panel="settings">Settings / Help</button>
+              <button data-panel="multiplayer">Multiplayer</button>
+              <button id="musicToggle" aria-pressed="false">Music: Off</button>
             </nav>
             <div id="gameMenu" class="game-menu" hidden role="dialog" aria-modal="true" aria-label="Paused game menu">
               <div class="menu-card">
                 <div class="menu-heading"><p>PAUSED · Game and timer stopped</p><button id="closeMenu">Resume · Esc</button></div>
                 <div id="menuContent"></div>
+                <section id="multiplayerPanel" hidden>
+                  <h2>Sail with friends</h2>
+                  <p>Up to 8 players. Everyone sails their own boat in the same ocean.</p>
+                  <label for="playerName">Your name</label>
+                  <input id="playerName" maxlength="24" value="Angler" autocomplete="nickname" />
+                  <div class="room-actions">
+                    <button id="createRoom" type="button">Create room</button>
+                    <button id="leaveRoom" type="button" hidden>Leave room</button>
+                  </div>
+                  <label for="roomCode">Or join a friend’s room</label>
+                  <input id="roomCode" maxlength="6" placeholder="ABC123" autocomplete="off" />
+                  <div class="room-actions">
+                    <button id="joinRoom" type="button">Join room</button>
+                  </div>
+                  <p id="multiplayerStatus" role="status" aria-live="polite">Create a room and share its code with a friend.</p>
+                  <button id="copyRoom" hidden>Copy invite link</button>
+                  <ul id="playerList" aria-label="Players in this room"></ul>
+                  <p class="hint">PeerJS connects browsers directly. The host must keep this game open. Menus pause your boat and timer; friends can keep playing.</p>
+                </section>
               </div>
             </div>
           </div>
@@ -634,6 +665,8 @@
       Progress saves automatically in this browser. Take your time — the ocean
       isn't going anywhere.
     </footer>
+    <script src="audio.js"></script>
+    <script src="multiplayer.js"></script>
     <script>
       "use strict";
       const $ = (id) => document.getElementById(id);
@@ -1012,11 +1045,12 @@
       viewport.append($("saveNote"), document.querySelector(".controls"));
       const settingsPanel = document.createElement("section");
       settingsPanel.innerHTML = "<h2>Settings & controls</h2>";
-      settingsPanel.append(document.querySelector(".conditions"), document.querySelector(".modes"), document.querySelector(".controls .hint"));
+      settingsPanel.append(document.querySelector(".controls .conditions"), document.querySelector(".controls .modes"), document.querySelector(".controls .hint"));
       const menuPanels = {
         shop: document.querySelector(".shop"),
         collection: document.querySelector(".collection"),
         settings: settingsPanel,
+        multiplayer: $("multiplayerPanel"),
       };
       for (const panel of Object.values(menuPanels)) {
         panel.hidden = true;
@@ -1046,6 +1080,27 @@
         };
       });
       $("closeMenu").onclick = closeMenu;
+      multiplayer.stateProvider = () => ({
+        x: (boatX - 0.43) * 56,
+        z: (boatY - 0.63) * 85,
+        heading: yachtHeading,
+        offsetX: anglerOffsetX,
+        offsetZ: anglerOffsetZ,
+        jump: jumpHeight,
+        swimming,
+        paused,
+        catches: save.catches.reduce((total, count) => total + count, 0),
+        lastCatch: lastCatch >= 0 ? species[lastCatch].name : "",
+      });
+      multiplayer.onJoined = (spawn) => {
+        boatX = 0.43 + spawn.x / 56;
+        boatY = 0.63 + spawn.z / 85;
+        yachtSpeed = 0;
+        throttle = 0;
+        keys.clear();
+        closeMenu();
+        message("You joined the shared ocean. Open Multiplayer to see your room code and friends.");
+      };
       let mode = "free",
         phase = "idle",
         deadline = 0,
@@ -1510,14 +1565,14 @@
         rudder +=
           (Math.max(-1, Math.min(1, turn)) - rudder) * (1 - Math.exp(-dt * 4));
         const targetSpeed =
-          phase === "idle" ? throttle * (throttle < 0 ? 2 : 5) : 0;
+          phase === "idle" ? throttle * (throttle < 0 ? 5 : 14) : 0;
         yachtSpeed +=
           (targetSpeed - yachtSpeed) *
-          (1 - Math.exp(-dt * (phase === "idle" ? 1.6 : 5)));
+          (1 - Math.exp(-dt * (phase === "idle" ? 2.5 : 5)));
         yachtHeading -=
           rudder *
           dt *
-          (0.5 + Math.abs(yachtSpeed) * 0.13) *
+          (0.5 + Math.min(Math.abs(yachtSpeed), 7) * 0.13) *
           (yachtSpeed < -0.1 ? -1 : 1);
         boatX -= (Math.sin(yachtHeading) * yachtSpeed * dt) / 56;
         boatY -= (Math.cos(yachtHeading) * yachtSpeed * dt) / 85;
@@ -2218,6 +2273,15 @@
         const cookedFishMesh = mesh([]);
         let renderedHeldFishVersion = -1;
         const armsMesh = mesh([]);
+        const remoteArms = [];
+        for (const side of [-1, 1]) {
+          const shoulder = [homeX + side * 0.65, deckHeight + 2.13, homeZ];
+          const elbow = [homeX + side * 0.75, deckHeight + 1.7, homeZ + 0.1];
+          const hand = [homeX + side * 0.74, deckHeight + 1.43, homeZ + 0.18];
+          limb(remoteArms, shoulder, elbow, 0.17, jacket);
+          limb(remoteArms, elbow, hand, 0.12, skin);
+        }
+        const remoteArmsMesh = mesh(remoteArms);
         function updateMesh(targetMesh, data) {
           gl.bindBuffer(gl.ARRAY_BUFFER, targetMesh.buffer);
           gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.DYNAMIC_DRAW);
@@ -2327,10 +2391,11 @@
           ];
 
           const target = [followX, swimming ? 0.8 : deckHeight + 1, followZ - 1.5];
+          const view = viewProjection(eye, target, width / height);
           gl.uniformMatrix4fv(
             uniforms.View,
             false,
-            viewProjection(eye, target, width / height),
+            view,
           );
           gl.uniform3fv(uniforms.Eye, eye);
           gl.uniform3fv(uniforms.Sky, sky);
@@ -2431,7 +2496,7 @@
             const deltaX = waypoint[0] - anglerOffsetX;
             const deltaZ = waypoint[1] - anglerOffsetZ;
             const distance = Math.hypot(deltaX, deltaZ);
-            const step = Math.min(distance, frameDt * 4.5);
+            const step = Math.min(distance, frameDt * 8);
             if (distance > 0) {
               anglerOffsetX += deltaX / distance * step;
               anglerOffsetZ += deltaZ / distance * step;
@@ -2439,7 +2504,7 @@
             if (distance <= step + 0.001) cookingCatch.route.shift();
             cookingCatch.start = now;
           }
-          const cookingTime = cookingCatch ? (now - cookingCatch.start) / 1000 : -1;
+          const cookingTime = cookingCatch ? (now - cookingCatch.start) / 1000 * 2.5 : -1;
           if (cookingCatch) {
             $("sceneLabel").textContent = cookingTime < 2.5
               ? "FRESH CATCH · " + cookingCatch.fish.name
@@ -2496,6 +2561,38 @@
           }
           updateMesh(armsMesh, arms);
           renderMesh(armsMesh, deckModel);
+          for (const peer of multiplayer.peers.values()) {
+            const smoothing = 1 - Math.exp(-frameDt * 12);
+            peer.drawX += (peer.x - peer.drawX) * smoothing;
+            peer.drawZ += (peer.z - peer.drawZ) * smoothing;
+            const headingDelta = Math.atan2(Math.sin(peer.heading - peer.drawHeading), Math.cos(peer.heading - peer.drawHeading));
+            peer.drawHeading += headingDelta * smoothing;
+            const remoteY = wave(peer.drawX, peer.drawZ, t, swell) * 0.55;
+            const remoteDeck = modelMatrix(peer.drawX, remoteY, peer.drawZ, peer.drawHeading);
+            renderMesh(boatMesh, remoteDeck);
+            renderMesh(brazierMesh, multiply(remoteDeck, modelMatrix(...firePosition)));
+            renderMesh(bucketMesh, multiply(remoteDeck, modelMatrix(...bucketPosition)));
+            const remoteSwimLift = peer.swimming ? -deckHeight - 2.5 : 0;
+            const remoteCharacter = multiply(remoteDeck, modelMatrix(peer.offsetX,
+              characterLift + peer.jump + remoteSwimLift, peer.offsetZ));
+            renderMesh(anglerMesh, remoteCharacter);
+            renderMesh(remoteArmsMesh, multiply(remoteDeck, modelMatrix(peer.offsetX, peer.jump + remoteSwimLift, peer.offsetZ)));
+            if (!peer.label) {
+              peer.label = document.createElement("span");
+              peer.label.className = "peer-label";
+              viewport.append(peer.label);
+            }
+            peer.label.textContent = peer.name + (peer.paused ? " · paused" : "");
+            const labelPosition = multiply(remoteDeck, modelMatrix(homeX + peer.offsetX,
+              deckHeight + 5 + peer.jump + remoteSwimLift, homeZ + peer.offsetZ));
+            const clip = [0, 1, 2, 3].map(row => view[row] * labelPosition[12] +
+              view[4 + row] * labelPosition[13] + view[8 + row] * labelPosition[14] + view[12 + row]);
+            const screenX = clip[0] / clip[3];
+            const screenY = clip[1] / clip[3];
+            peer.label.hidden = clip[3] <= 0 || Math.abs(screenX) > 1 || Math.abs(screenY) > 1;
+            peer.label.style.left = (screenX * 0.5 + 0.5) * canvas.clientWidth + "px";
+            peer.label.style.top = (0.5 - screenY * 0.5) * canvas.clientHeight + "px";
+          }
           if (cookingCatch && cookingTime >= 5.5) {
             cookedFish.push({ fish: cookingCatch.fish, earn: cookingCatch.earn });
             cookingCatch = null;
