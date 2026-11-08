@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arcade Duels · Gameplay Lab</title>
+  <link rel="stylesheet" href="lab.css?v=mp2" />
+  <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <div id="viewport"></div>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-icon">A</span> MY ARCADE <span class="divider">/</span> <strong>DUELS</strong></a>
+    <span class="build-tag"><i></i> GAMEPLAY LAB <span>01</span></span>
+    <div class="top-actions"><span id="fps">— FPS</span><button id="menu-button">Controls & tuning <kbd>Esc</kbd></button></div>
+  </header>
+  <div id="loading"><div class="load-card"><span class="eyebrow">PREPARING THE LAB</span><h1>Loading your assets.</h1><p id="load-detail">Character, arms, weapons and targets</p><progress id="load-progress" value="0" max="11"></progress></div></div>
+  <main id="menu" hidden>
+    <section class="intro"><span class="eyebrow">FEEL FIRST. DETAILS LATER.</span><h1>The proving ground<span>.</span></h1><p>Try the movement. Test the weapons. Inspect the models.<br>A rough arena for finding what works.</p></section>
+    <nav class="tabs" aria-label="Lab mode"><button id="play-tab" class="active">01 <strong>Playtest</strong></button><button id="lab-tab">02 <strong>Asset inspection</strong></button></nav>
+    <div class="panels">
+      <section class="panel" id="play-panel"><div class="panel-heading"><h2>Loadout</h2><span>EXISTING ASSETS</span></div><label for="weapon">Weapon</label><select id="weapon"></select><div class="weapon-facts" id="weapon-facts"></div><div class="setting-row"><label for="moving">Moving targets</label><input id="moving" type="checkbox" /></div><div class="setting-row"><label for="arms-toggle">Show source arms <small>unposed</small></label><input id="arms-toggle" type="checkbox" /></div><button class="primary" id="start">Enter playtest <span>↗</span></button><button class="secondary" id="reset-targets">Reset targets & ammo</button><p class="fine">Click to capture your mouse. Escape opens this panel.<br>Press V to see your character in third person.</p></section>
+      <section class="panel" id="lab-panel" hidden><div class="panel-heading"><h2>Model inspector</h2><span>REAL SOURCE FILES</span></div><label for="asset">Asset</label><select id="asset"></select><label for="animation">Animation clip</label><select id="animation"></select><div class="setting-row"><label for="wireframe">Wireframe</label><input id="wireframe" type="checkbox" /></div><div class="setting-row"><label for="spin">Auto rotate</label><input id="spin" type="checkbox" checked /></div><p id="asset-meta" class="asset-meta"></p><p class="fine">Drag the scene to orbit. Scroll to zoom.<br>Source meshes; lighting and poses are provisional.</p></section>
+      <section class="panel tuning"><div class="panel-heading"><h2>Feel & tuning</h2><button id="defaults">Reset</button></div><div id="sliders"></div><p class="fine">Live prototype values, not verified RIVALS stats.<br>Changes stay in this browser.</p></section>
+      <section class="panel multiplayer"><div class="panel-heading"><h2>Play with a friend</h2><span>PEERJS · 1V1</span></div>
+        <label for="player-name">Your name</label><input id="player-name" type="text" maxlength="24" value="Player" autocomplete="nickname">
+        <label for="room-code">Room code</label><input id="room-code" type="text" maxlength="6" placeholder="ABC123" autocomplete="off" spellcheck="false">
+        <div class="room-actions"><button id="create-room" disabled>Create room</button><button id="join-room" disabled>Join room</button></div>
+        <div class="room-actions"><button id="copy-room" hidden>Copy invite</button><button id="leave-room" hidden>Leave room</button></div>
+        <p id="multiplayer-status" class="fine" role="status">Loading the lab…</p><div id="room-players"></div><button id="rematch" class="secondary" hidden>Rematch</button>
+        <p class="fine">First to five. Both players enter the playtest. Menus do not pause a room. Room gameplay values use defaults.</p>
+        <details><summary>Connecting from another computer</summary><p>Use the same hosted HTTPS game URL or a reachable local-network server. A localhost invite only opens on this computer. Share the six-character code after your friend opens their copy. The host must stay open.</p></details>
+        <details><summary>Prototype & credits</summary><p>Approximate map and temporary poses. Models: Kenney, Quaternius and wwwriks (CC0). Three.js and PeerJS (MIT). <a href="README.md">Controls and licenses</a>.</p></details>
+      </section>
+    </div>
+  </main>
+  <div id="duel-banner" hidden><strong id="duel-score"></strong><span id="duel-phase"></span></div>
+  <div id="hud" hidden>
+    <div class="arena-label"><i></i> ARENA BLOCKOUT <span>LOCAL PLAYTEST</span><span id="session-stats">0 SHOTS · 0 HITS · 0 ELIMINATIONS</span></div>
+    <div id="crosshair"><span></span><span></span><span></span><span></span></div><div id="hitmarker">×</div>
+    <div id="message"></div><div id="target-readout"></div>
+    <div class="bottom-hud"><div class="health"><span>HEALTH</span><strong><b id="self-hp">150</b> <small>/ 150</small></strong><div id="health-bar"></div></div><div class="movement-readout"><span id="state">GROUNDED</span><span id="position-readout"></span><strong id="speed">0.0 <small>m/s</small></strong></div><div class="ammo"><span id="hud-weapon"></span><strong><b id="ammo"></b> <small>/ ∞</small></strong><span id="reload-state"></span></div></div>
+    <div class="control-strip"><span><kbd>W A S D</kbd> move</span><span><kbd>Space</kbd> jump</span><span><kbd>C</kbd> slide / crouch</span><span><kbd>R</kbd> reload</span><span><kbd>1–7</kbd> weapon</span><span><kbd>V</kbd> character view</span><span><kbd>Esc</kbd> tune</span></div>
+  </div>
+  <footer id="footer"><span><i></i> SINGLE MAP · GAMEPLAY PROTOTYPE</span><span id="status">Loading assets…</span></footer>
+  <script type="module" src="lab.js?v=mp2"></script>
+</body>
+</html>

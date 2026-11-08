@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+dist/
+.vercel/
+.env*
+!.env.example
+research/assets/archives/
+research/assets/extracted/
+research/assets/evidence/
+games/duels/preview*.png

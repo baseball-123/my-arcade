@@ -1,6 +1,14 @@
 # my-arcade
 my arcade website
 
+## Arcade Duels gameplay prototype
+
+Play online: [Arcade Duels](https://baseball-123.github.io/my-arcade/games/duels/). Create a room and share its invite link with a friend. Keep the host tab open while playing. [Stillwater fishing](https://baseball-123.github.io/my-arcade/) remains at the main page.
+
+The new shooter validation lab is at `games/duels/`. From this repository folder, run `python -m http.server 8081 --bind 127.0.0.1`, then open [the gameplay lab](http://127.0.0.1:8081/games/duels/). It includes existing asset inspection and tunable shooting, movement, sliding and jumping in a rough Arena-like map. See [prototype controls and limitations](games/duels/README.md). Stillwater remains at the main page.
+
+The shooter now has two-player PeerJS rooms. Create a room, share the code, and have your friend join the same game version. Both enter the playtest for first-to-five duels. Internet friends need a hosted game URL; a localhost invite only works on your own computer. See [shooter multiplayer instructions](games/duels/README.md#multiplayer-with-a-friend).
+
 Open `index.html` to play Stillwater. All controls and menus are inside the game viewport.
 
 - Arrow keys or WASD steer the boat or move the character, depending on the control mode.
