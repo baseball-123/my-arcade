@@ -15,10 +15,10 @@ try {
 await mkdir(output, { recursive: true });
 await writeFile(marker, 'my-arcade-static-v1\n');
 
-for (const name of ['index.html', 'audio.js', 'multiplayer.js']) await cp(join(root, name), join(output, name));
+for (const name of ['index.html', 'audio.js', 'multiplayer.js', 'fishing-ui.css']) await cp(join(root, name), join(output, name));
 const source = join(root, 'games', 'duels'), destination = join(output, 'games', 'duels');
 await mkdir(destination, { recursive: true });
-for (const name of ['index.html', 'lab.css', 'lab.js', 'weapons.js', 'duel-rules.js', 'multiplayer.js', 'README.md']) {
+for (const name of ['index.html', 'lab.css', 'lab.js', 'player-ui.js', 'player-ui.css', 'avatar.js', 'weapons.js', 'duel-rules.js', 'multiplayer.js', 'README.md']) {
   await cp(join(source, name), join(destination, name));
 }
 for (const name of ['assets', 'vendor']) await cp(join(source, name), join(destination, name), { recursive: true });

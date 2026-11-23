@@ -151,12 +151,20 @@ test("isolates rooms, handles the host leaving and removes player labels", async
   await guest.join(host.element("roomCode").value); await flush();
   assert.equal(otherHost.api.peers.size, 0);
   let removed = false;
+  const closures = [];
+  guest.api.onLeft = message => closures.push(message);
+  assert.equal(host.api.isHost, true);
+  assert.equal(guest.api.inRoom, true);
+  assert.equal(guest.api.isHost, false);
   [...guest.api.peers.values()][0].label = { remove() { removed = true; } };
   host.api.leave(); await flush();
   assert.equal(guest.api.peers.size, 0);
   assert(removed);
   assert.match(guest.element("multiplayerStatus").textContent, /host left|connection closed/);
   assert.equal(guest.element("createRoom").disabled, false);
+  assert.equal(guest.api.inRoom, false);
+  assert.equal(closures.length, 1);
+  assert.match(closures[0], /host left|connection closed/);
   otherHost.api.leave();
 });
 

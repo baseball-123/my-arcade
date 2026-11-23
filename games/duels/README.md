@@ -10,7 +10,7 @@ Open [the local prototype](http://127.0.0.1:8081/games/duels/) in a desktop brow
 
 ## Available now
 
-- PeerJS 1.5.5 two-player rooms, invite codes/links, remote characters and held guns, synchronized movement and shooting, host-decided damage/health/ammunition, first-to-five rounds and host rematches.
+- Private PeerJS battles for up to six players, with free-for-all, teams and classic duels. The host decides damage, ammo, scoring and respawns.
 
 - Rough Arena-like blockout with cover, ramps, collision, ground movement, crouching, sliding and jumping.
 - Seven actual Quaternius gun models: automatic/semi-auto/burst/pellet fire, ADS zoom, recoil, ammunition, reload timing and weapon switching.
@@ -27,15 +27,15 @@ Embedded browsers may reject pointer lock. The lab falls back to click-drag look
 
 This is a core-mechanics and asset-validation prototype. Values are starting points, not measured RIVALS parity. The map is approximate; bots, utility actions and an arcade selector are still planned. Audio is temporary synthesized feedback. Reload motion and grips are provisional. Inspector guns load directly from OBJ/MTL so conversion work does not block validation. Target silhouettes have simple hitboxes; the original target model is also available for separate inspection.
 
-## Multiplayer with a friend
+## Private battles
 
-1. Open the same version of the game on both computers. Use a hosted HTTPS URL for internet play, or a reachable server on your local network. The `127.0.0.1` URL only reaches the computer opening it; copying that URL to a different computer does not share this server.
-2. Enter your name and press **Create room**. Share the six-character code, or **Copy invite** when both players can reach that URL.
-3. Your friend enters their name/code and presses **Join room**. Both players press **Enter playtest**. The round starts after a three-second countdown.
-4. Eliminate the opponent to win a round. Health and ammunition reset for the next round; first to five wins the match. The host can choose **Rematch** in the menu.
-5. Keep the host tab open and active. Menus stop your input but do not pause the room or make you invulnerable. **Leave room** returns to solo practice. If a guest leaves, the host's room remains available for a replacement; if the host leaves, the guest returns to solo.
+1. Open the same build on each device. Use the same hosted URL or a reachable local network server.
+2. Choose **Free-for-all** (2 to 6 players, first to 30 eliminations), **Teams** (2, 4 or 6 players, first team to 50 eliminations), or **Classic duel** (2 players, first to five rounds). Select the room size and create a room. Share the six-character code.
+3. In the lobby choose equipment and press **Ready**. Once the required players are ready, the host presses **Start match**. Click **Enter battle** to capture the mouse. Free-for-all and team players choose equipment again after elimination.
+4. In a battle, **1** selects your primary, **2** your sidearm, **3** your chair, and **4** your grenade. Each life gives one grenade. Changing weapons cancels the current reload and preserves remaining ammo.
+5. The results screen shows the final score. The host can start a rematch, and any player can leave. Keep the host tab open during the match.
 
-Rooms support two players. Practice targets are hidden in rooms; resetting yourself is disabled. Gameplay tuning uses common defaults while in a room, with personal sensitivity and FOV retained. Solo tuning returns when you leave. Weapon switching cancels reloads and preserves each weapon's remaining online ammo.
+Teams are assigned by the host in alternating slots, and friendly fire is disabled. Respawns favor covered locations away from opponents. Gameplay tuning uses common defaults in rooms. Equipment variants share the existing gun models. No account or database is required.
 
 This follows Stillwater's PeerJS room IDs, metadata, generation guards, signaling reconnect, invite and disconnect patterns. The shooter has a separate protocol prefix and version check so fishing rooms cannot connect accidentally. Unlike the fishing movement snapshots, a shooter host also validates shot cadence, weapon/ammo/reload state and line-of-sight hits, owns HP/scores, and resets rounds. Pose snapshots are sent at 20 Hz and remote models interpolate between them. Movement is still client simulated with finite bounds/speed checks; full authoritative movement, lag compensation and ranked-grade anti-cheat are outside this prototype.
 

@@ -5,3 +5,16 @@
 
 .bottom-hud{background:linear-gradient(0deg,#11211de8,#11211d80);padding:16px 22px;border-radius:9px;text-shadow:0 1px 3px #000}.control-strip{background:#13231ed9;padding:9px 4px;border-radius:5px;margin:0 32px}.arena-label{color:#172f22;font-weight:700}.arena-label>span{color:#365348}#crosshair span{background:#213e2a;box-shadow:0 0 0 1px #f2ffddaa}#message,#target-readout{color:#15331e;text-shadow:0 0 3px #e9ffd3,0 0 6px #e9ffd3;font-weight:700}#hitmarker{color:#e3ff8c;text-shadow:0 0 4px #000}
 #room-players{white-space:pre-line;line-height:1.9;font-size:11px;color:var(--accent)}@media(max-width:620px){.bottom-hud{left:12px;right:12px;padding:10px 12px;bottom:43px}.bottom-hud strong{font-size:26px}.movement-readout{display:none}.health>div{max-width:90px}.control-strip{margin:0 12px;font-size:8px;gap:6px}.arena-label{left:15px;top:74px;font-size:8px}.arena-label #session-stats{font-size:7px}#duel-banner{top:83px;width:calc(100% - 30px);padding:8px}#duel-banner strong{font-size:12px}#footer{gap:8px;letter-spacing:.3px}#footer>span{max-width:50%}#crosshair,#hitmarker{z-index:1}}
+
+#tuning-unlock { margin-bottom: 20px; }
+#tuning-unlock label { display: block; margin-bottom: 6px; }
+#owner-password { width: 100%; padding: 8px; background: #253133; border: 1px solid var(--line); border-radius: 5px; }
+#tuning-unlock .fine { margin: 6px 0; }
+input[type=range]:disabled { opacity: .45; cursor: default; }
+#match-results, #loadout-dialog { width: min(420px, calc(100% - 32px)); padding: 26px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); }
+#match-results::backdrop, #loadout-dialog::backdrop { background: #10191bce; }
+#match-results h1 { font-size: 36px; margin: 10px 0; }
+#result-score { font-size: 18px; color: var(--accent); }
+
+#loadout-dialog h1 { font-size: 32px; margin: 0 0 18px; }
+#loadout-dialog label, .room-options label { display: block; margin: 12px 0 5px; color: var(--muted); }

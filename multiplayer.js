@@ -90,6 +90,7 @@ globalThis.multiplayer = (() => {
     for (const player of players.values()) if (player.connection) send(player.connection, snapshot);
   }
   function leave(message = "You left the room. Your single-player game is still available.") {
+    const wasInRoom = Boolean(session);
     generation++;
     clearTimeout(startupTimeout);
     clearTimeout(reconnectTimeout);
@@ -105,6 +106,7 @@ globalThis.multiplayer = (() => {
     element("playerList").replaceChildren();
     controls();
     status(message);
+    if (wasInRoom) api.onLeft?.(message);
   }
   function loadLibrary() {
     if (typeof window.Peer === "function") return Promise.resolve();
@@ -310,6 +312,11 @@ globalThis.multiplayer = (() => {
   controls();
   const interval = setInterval(sync, 100);
   window.addEventListener("pagehide", () => { clearInterval(interval); leave(); });
+  Object.defineProperties(api, {
+    inRoom: { get: () => Boolean(session) },
+    isHost: { get: () => session?.host === true },
+    busy: { get: () => busy },
+  });
   api.leave = leave;
   return api;
 })();

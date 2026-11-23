@@ -507,6 +507,7 @@
         .game-menu { inset: 48px 8px 8px; }
       }
     </style>
+    <link rel="stylesheet" href="fishing-ui.css?v=1">
   </head>
   <body>
     <header>
@@ -517,7 +518,7 @@
       <div class="wallet">● <span id="coins">0</span> coins</div>
     </header>
     <main>
-      <div class="eyebrow">One player. A little peace and quiet.</div>
+      <div class="eyebrow">Fishing at your own pace.</div>
       <h1>A little closer to the wild.</h1>
       <p style="color: #66807c; margin-top: 0">
         Feel the swell. Find your water. Stay for one more cast.
@@ -535,7 +536,7 @@
             </div>
             <div class="scene-label" id="sceneLabel">OPEN OCEAN · FREEPLAY</div>
             <div id="multiplayerBadge" hidden></div>
-            <nav class="game-toolbar" aria-label="Game menus">
+            <nav class="game-toolbar" aria-label="Game menus"><button data-panel="pause" id="pauseButton">Pause · Esc</button>
               <button data-panel="shop">Shop</button>
               <button data-panel="collection">Collection</button>
               <button data-panel="settings">Settings / Help</button>
@@ -544,8 +545,53 @@
             </nav>
             <div id="gameMenu" class="game-menu" hidden role="dialog" aria-modal="true" aria-label="Paused game menu">
               <div class="menu-card">
-                <div class="menu-heading"><p>PAUSED · Game and timer stopped</p><button id="closeMenu">Resume · Esc</button></div>
-                <div id="menuContent"></div>
+                <div class="menu-heading"><p id="menuContext">STILLWATER</p><div class="menu-header-actions"><button id="backMenu" hidden>← Back</button><button id="closeMenu">Resume · Esc</button></div></div>
+                <div id="menuContent">
+                  <section id="homePanel">
+                    <p class="eyebrow">STILLWATER FISHING CLUB</p><h2>Your next catch awaits.</h2>
+                    <p>Explore the ocean, collect sea creatures, and upgrade your boat.</p>
+                    <button id="resumeTrip" hidden>Resume your trip</button>
+                    <button id="startFree" class="menu-primary">Freeplay</button>
+                    <button data-panel="competitionSetup">Competition</button>
+                    <button data-panel="multiplayer">Sail with friends</button>
+                    <button data-panel="help">Controls</button>
+                    <button data-panel="settings">Settings</button>
+                    <a class="menu-link" href="games/duels/">Play Arcade Duels →</a>
+                  </section>
+                  <section id="pausePanel" hidden><h2>Take a breather.</h2><p>Your boat and competition timer are paused. Friends keep sailing in multiplayer.</p>
+                    <button id="resumePause" class="menu-primary">Resume fishing</button>
+                    <button data-panel="shop">Tackle shop</button><button data-panel="collection">Catch collection</button>
+                    <button data-panel="competitionSetup">Competition</button><button data-panel="settings">Settings</button>
+                    <button data-panel="help">Controls</button><button data-panel="multiplayer">Sail with friends</button>
+                    <button id="pauseHome">Return home</button>
+                  </section>
+                  <section id="helpPanel" hidden><h2>How to play</h2>
+                    <h3>Catch a fish</h3><ol><li>Click Cast your line or press F.</li><li>Wait for a bite, then click Hook it or press F.</li><li>Tap F or Reel in repeatedly to fill the bar before the fish escapes.</li></ol>
+                    <h3>Explore and cook</h3><dl>
+                      <dt>WASD / arrows</dt><dd>Steer the boat or move your character.</dd>
+                      <dt>Control character</dt><dd>Switch between walking on deck and steering.</dd>
+                      <dt>Space / Jump</dt><dd>Jump and follow your character with the camera.</dd>
+                      <dt>Swim / Board boat</dt><dd>Enter the ocean or return to the deck.</dd>
+                      <dt>Cook fish</dt><dd>Carry a raw catch to the fire and put the meal in your bucket.</dd>
+                      <dt>Enter / Eat</dt><dd>Eat a cooked fish from your bucket.</dd>
+                      <dt>Drag / scroll</dt><dd>Orbit and zoom the camera. Reset view restores it.</dd>
+                      <dt>Escape</dt><dd>Open pause or resume fishing.</dd>
+                    </dl><p>Coins, upgrades, and your collection save in this browser. Raw and cooked food last for the current page session.</p>
+                  </section>
+                  <section id="competitionPanel" hidden><h2>The ninety-second challenge</h2>
+                    <p>Land <strong>8 fish in 90 seconds</strong> to earn a <strong>150-coin bonus</strong>. You keep coins from every catch, even if time runs out.</p>
+                    <p>Opening a menu pauses your timer. Closing it resumes the challenge.</p>
+                    <button id="beginCompetition" class="menu-primary">Start competition</button>
+                  </section>
+                  <section id="resultsPanel" hidden><h2 id="fishingResultTitle"></h2><p id="fishingResultSummary"></p>
+                    <button id="competitionAgain" class="menu-primary">Play again</button><button id="resultsFree">Continue in freeplay</button><button id="resultsHome">Home</button>
+                  </section>
+                  <section id="confirmPanel" hidden><h2 id="confirmTitle"></h2><p id="confirmText"></p>
+                    <button id="confirmAction" class="menu-primary">Continue</button><button id="cancelAction">Cancel</button>
+                  </section>
+                  <section id="graphicsPanel" hidden><h2>The ocean could not load</h2><p id="graphicsMessage"></p><button id="retryOcean">Reload ocean</button><a class="menu-link" href="games/duels/">Open Arcade Duels</a></section>
+                  <section id="connectionPanel" hidden><h2>Room closed</h2><p id="roomClosedMessage"></p><button id="continueSolo" class="menu-primary">Continue solo</button><button data-panel="multiplayer">Open friends</button><button id="connectionHome">Home</button></section>
+                </div>
                 <section id="multiplayerPanel" hidden>
                   <h2>Sail with friends</h2>
                   <p>Up to 8 players. Everyone sails their own boat in the same ocean.</p>
@@ -614,16 +660,7 @@
               <div class="needle" id="needle"></div>
             </div>
             <button class="action" id="action">Cast your line</button>
-            <p class="hint">
-              Click or press F to cast and hook a bite. Then tap F or
-              Reel in repeatedly to land your fish. Space jumps and switches to the
-              character camera. Swim enters the water; Board boat returns to deck.
-              Cook fish puts a catch in the fire, then in your bucket. Enter eats one cooked fish.
-              Steer with WASD, arrow keys,
-              or the direction buttons. Press Control character to walk around
-              the whole deck with the arrow keys. Press it again to steer the boat.
-              Competition: 8 fish in 90 seconds for a 150-coin bonus.
-            </p>
+            <p class="hint" id="fishingQuickHint">F to cast, hook, and reel · Escape for controls and pause.</p>
           </div>
         </section>
         <aside class="panel shop">
@@ -658,6 +695,7 @@
           </select>
           <span id="speciesCount"></span>
         </div>
+        <p id="speciesEmpty" hidden>No sea creatures match these filters. Try a different name or choose All sea creatures.</p>
         <div class="fish-list" id="collection"></div>
       </section>
     </main>
@@ -1044,42 +1082,132 @@
       const viewport = document.querySelector(".water");
       viewport.append($("saveNote"), document.querySelector(".controls"));
       const settingsPanel = document.createElement("section");
-      settingsPanel.innerHTML = "<h2>Settings & controls</h2>";
-      settingsPanel.append(document.querySelector(".controls .conditions"), document.querySelector(".controls .modes"), document.querySelector(".controls .hint"));
+      settingsPanel.innerHTML = "<h2>Settings</h2><p>Weather affects bites and how hard fish pull.</p>";
+      settingsPanel.append(document.querySelector(".controls .conditions"), $("musicToggle"));
+      const saveInfo = document.createElement("p");
+      saveInfo.id = "settingsSaveNote";
+      saveInfo.textContent = "Coins, upgrades, and your collection save automatically in this browser. Food lasts for this page session.";
+      settingsPanel.append(saveInfo);
+      document.querySelector(".controls .modes").hidden = true;
       const menuPanels = {
-        shop: document.querySelector(".shop"),
-        collection: document.querySelector(".collection"),
-        settings: settingsPanel,
-        multiplayer: $("multiplayerPanel"),
+        home: $("homePanel"), pause: $("pausePanel"), help: $("helpPanel"),
+        competitionSetup: $("competitionPanel"), results: $("resultsPanel"),
+        confirm: $("confirmPanel"), graphics: $("graphicsPanel"), connection: $("connectionPanel"),
+        shop: document.querySelector(".shop"), collection: document.querySelector(".collection"),
+        settings: settingsPanel, multiplayer: $("multiplayerPanel"),
       };
       for (const panel of Object.values(menuPanels)) {
         panel.hidden = true;
         $("menuContent").append(panel);
       }
-      function closeMenu() {
+      let menuScreen = "home";
+      let menuReturn = "home";
+      let tripStarted = false;
+      let confirmCallback = null;
+      let confirmReturn = "pause";
+      let intentionalRoomLeave = false;
+      const protectedScreens = new Set(["home","results","confirm","graphics","connection"]);
+      function clearInput() {
+        keys.clear();
+        buttonInput = null;
+        drag = null;
+        throttle = 0;
+      }
+      function openPanel(name, opener) {
+        if (opener) { menuOpener = opener; menuReturn = $("gameMenu").hidden ? "pause" : menuScreen; }
+        menuScreen = name;
+        paused = true;
+        clearInput();
+        for (const [key,panel] of Object.entries(menuPanels)) panel.hidden = key !== name;
+        $("gameMenu").hidden = false;
+        $("gameMenu").setAttribute("aria-label", name === "home" ? "Stillwater home" : name === "results" ? "Competition results" : "Fishing menu");
+        $("menuContext").textContent = name === "home" ? "WELCOME TO STILLWATER" : name === "results" ? "COMPETITION FINISHED" :
+          multiplayer.inRoom ? "YOUR BOAT IS PAUSED · FRIENDS KEEP SAILING" : "PAUSED · YOUR TIMER IS STOPPED";
+        $("closeMenu").hidden = protectedScreens.has(name) || !tripStarted;
+        $("backMenu").hidden = protectedScreens.has(name) || name === "pause";
+        $("resumeTrip").hidden = !tripStarted;
+        $("beginCompetition").textContent = mode === "competition" ? "Restart competition" : "Start competition";
+        document.querySelector(".controls").inert = true;
+        document.querySelector(".view-tools").inert = true;
+        document.querySelector(".game-toolbar").inert = true;
+        const focus = menuPanels[name].querySelector("button:not([hidden]), input, select, a");
+        (protectedScreens.has(name) ? focus : !tripStarted ? $("backMenu") : $("closeMenu"))?.focus();
+      }
+      function closeMenu(force = false) {
+        if (protectedScreens.has(menuScreen) && force !== true) return;
+        tripStarted = true;
         paused = false;
         $("gameMenu").hidden = true;
         document.querySelector(".controls").inert = false;
         document.querySelector(".view-tools").inert = false;
-        keys.clear();
+        document.querySelector(".game-toolbar").inert = false;
+        clearInput();
         lastRealTime = performance.now();
         menuOpener?.focus();
       }
-      document.querySelectorAll("[data-panel]").forEach(button => {
-        button.onclick = () => {
-          menuOpener = button;
-          paused = true;
-          keys.clear();
-          buttonInput = null;
-          drag = null;
-          for (const [name, panel] of Object.entries(menuPanels)) panel.hidden = name !== button.dataset.panel;
-          $("gameMenu").hidden = false;
-          document.querySelector(".controls").inert = true;
-          document.querySelector(".view-tools").inert = true;
-          $("closeMenu").focus();
+      function confirmChange(title, text, callback) {
+        confirmReturn = menuScreen;
+        confirmCallback = callback;
+        $("confirmTitle").textContent = title;
+        $("confirmText").textContent = text;
+        openPanel("confirm");
+      }
+      function startTrip(value) {
+        const begin = () => { setMode(value); closeMenu(true); };
+        if (mode === "competition") confirmChange("End this competition?", "Your current run will end. You keep your catch coins and saved progress.",begin);
+        else begin();
+      }
+      function goHome() {
+        const finishTrip = () => {
+          if (multiplayer.inRoom || multiplayer.busy) {
+            intentionalRoomLeave = true;
+            multiplayer.leave();
+            intentionalRoomLeave = false;
+          }
+          setMode("free");
+          openPanel("home");
         };
+        if (multiplayer.inRoom) confirmChange("Leave your shared ocean?",
+          multiplayer.isHost ? "You are hosting. Returning home closes this room for everyone. Your saved progress stays here." : "You will leave this room. Your saved progress stays here.",
+          finishTrip);
+        else if (mode === "competition") confirmChange("End this competition?", "Returning home ends this run. You keep coins from your catches.",finishTrip);
+        else finishTrip();
+      }
+      document.querySelectorAll("[data-panel]").forEach(button => {
+        button.onclick = () => openPanel(button.dataset.panel,button);
       });
-      $("closeMenu").onclick = closeMenu;
+      $("backMenu").onclick = () => openPanel(!tripStarted || menuReturn === "home" ? "home" : "pause");
+      $("closeMenu").onclick = () => closeMenu();
+      $("resumePause").onclick = () => closeMenu();
+      $("resumeTrip").onclick = () => closeMenu(true);
+      $("startFree").onclick = () => startTrip("free");
+      $("beginCompetition").onclick = () => startTrip("competition");
+      $("competitionAgain").onclick = () => startTrip("competition");
+      $("resultsFree").onclick = () => startTrip("free");
+      $("pauseHome").onclick = $("resultsHome").onclick = $("connectionHome").onclick = goHome;
+      $("confirmAction").onclick = () => {
+        const callback = confirmCallback;
+        confirmCallback = null;
+        callback?.();
+      };
+      $("cancelAction").onclick = () => { confirmCallback = null; openPanel(confirmReturn); };
+      $("continueSolo").onclick = () => closeMenu(true);
+      $("retryOcean").onclick = () => location.reload();
+      const originalLeave = $("leaveRoom").onclick;
+      $("leaveRoom").onclick = () => {
+        if (!multiplayer.inRoom) { originalLeave?.(); return; }
+        confirmChange("Leave the room?", multiplayer.isHost ? "You are hosting. Leaving closes the room for every player." : "You can keep fishing solo after leaving.", () => {
+          intentionalRoomLeave = true;
+          originalLeave?.();
+          intentionalRoomLeave = false;
+          openPanel("multiplayer");
+        });
+      };
+      multiplayer.onLeft = text => {
+        if (intentionalRoomLeave) return;
+        $("roomClosedMessage").textContent = text;
+        openPanel("connection");
+      };
       multiplayer.stateProvider = () => ({
         x: (boatX - 0.43) * 56,
         z: (boatY - 0.63) * 85,
@@ -1098,7 +1226,7 @@
         yachtSpeed = 0;
         throttle = 0;
         keys.clear();
-        closeMenu();
+        closeMenu(true);
         message("You joined the shared ocean. Open Multiplayer to see your room code and friends.");
       };
       let mode = "free",
@@ -1144,6 +1272,7 @@
         });
         $("speciesCount").textContent =
           visible + " of " + species.length + " species";
+        $("speciesEmpty").hidden = visible > 0;
       }
       $("speciesSearch").addEventListener("input", filterCollection);
       $("speciesGroup").addEventListener("change", filterCollection);
@@ -1153,6 +1282,7 @@
         } catch (e) {
           $("saveNote").textContent =
             "Saving is unavailable in this browser. Your progress lasts for this session.";
+          $("settingsSaveNote").textContent = $("saveNote").textContent;
         }
       }
       function ui() {
@@ -1202,7 +1332,7 @@
               '" ' +
               (level >= 5 || save.coins < cost ? "disabled" : "") +
               ">" +
-              (level >= 5 ? "Fully upgraded" : "Upgrade · " + cost + " coins") +
+              (level >= 5 ? "Fully upgraded" : save.coins < cost ? cost + " coins · Need " + (cost - save.coins) + " more" : "Upgrade · " + cost + " coins") +
               "</button></div>"
             );
           })
@@ -1245,9 +1375,10 @@
             : "Freeplay: relax, fish, and earn coins at your own pace.",
         );
       }
-      $("free").onclick = () => setMode("free");
-      $("competition").onclick = () => setMode("competition");
+      $("free").onclick = () => startTrip("free");
+      $("competition").onclick = () => startTrip("competition");
       function finish(won) {
+        if (mode !== "competition") return;
         if (won) {
           save.coins += 150;
           persist();
@@ -1267,6 +1398,11 @@
                 caught +
                 "/8 fish. You keep your catch coins. Try again or relax in freeplay.",
         );
+        $("fishingResultTitle").textContent = won ? "Challenge complete!" : "Time is up";
+        $("fishingResultSummary").textContent = won
+          ? "You landed " + caught + "/8 fish and earned a 150-coin bonus. Your catch coins are saved too."
+          : "You landed " + caught + "/8 fish. You keep all coins from your catches.";
+        openPanel("results");
       }
       function act() {
         if (paused || cookingCatch || jumpHeight > 0) return;
@@ -1607,9 +1743,15 @@
         button.onclick = () => steer(...moves[button.dataset.move]);
       });
       document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !paused) {
+          e.preventDefault();
+          openPanel("pause", $("pauseButton"));
+          return;
+        }
         if (e.key === "Escape" && paused) {
           e.preventDefault();
-          closeMenu();
+          if (!tripStarted && !protectedScreens.has(menuScreen)) openPanel("home");
+          else closeMenu();
           return;
         }
         if (paused) {
@@ -1650,7 +1792,16 @@
       document.addEventListener("keyup", (e) =>
         keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key),
       );
-      window.addEventListener("blur", () => keys.clear());
+      window.addEventListener("blur", () => {
+        clearInput();
+        if (!paused) openPanel("pause", $("pauseButton"));
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          clearInput();
+          if (!paused) openPanel("pause", $("pauseButton"));
+        }
+      });
       $("weather").onchange = () => {
         const notes = {
           sunny: "Long ocean swells. Balanced fishing.",
@@ -2668,6 +2819,8 @@
         renderer = null;
         $("sceneLabel").textContent =
           "3D graphics paused. Reload to restore the ocean.";
+        $("graphicsMessage").textContent = $("sceneLabel").textContent;
+        openPanel("graphics");
       });
       canvas.addEventListener("pointerdown", (event) => {
         if (paused) return;
@@ -2747,6 +2900,14 @@
         requestAnimationFrame(tick);
       }
       ui();
+      draw(gameNow);
+      if (!renderer) {
+        $("graphicsMessage").textContent = $("sceneLabel").textContent;
+        openPanel("graphics");
+      } else if (new URL(location.href).searchParams.has("room")) {
+        openPanel("multiplayer");
+      } else openPanel("home");
+      document.body.dataset.ready = "true";
       requestAnimationFrame(tick);
     </script>
   </body>

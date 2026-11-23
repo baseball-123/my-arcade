@@ -1,0 +1,55 @@
+/* Stillwater player menus keep the ocean visible behind readable surfaces. */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #f0c778; outline-offset:3px; }
+.game-toolbar { left:auto; right:16px; transform:none; gap:8px; }
+.game-toolbar button { background:#12313a; color:#f2f6ef; border-color:#6c9699; }
+.game-toolbar [data-panel=settings],.game-toolbar [data-panel=multiplayer] { display:none; }
+.game-menu { position:fixed; inset:0; z-index:20; padding:24px; background:#07171cc4; }
+.menu-card { width:min(640px,100%); max-height:calc(100dvh - 48px); color:#eff6ef; background:#142e35; border:1px solid #71918d; box-shadow:0 16px 70px #0007; }
+.menu-card h2 { font-size:30px; letter-spacing:-.8px; color:#f4f7ed; line-height:1.2; }
+.menu-card h3 { color:#f0c778; font-size:16px; }
+.menu-card p,.menu-card li,.menu-card dd { font-size:14px; line-height:1.7; color:#d0dfd9; }
+.menu-card .hint { color:#c2d6ce; }
+.menu-card button { min-height:42px; border:1px solid #71918d; background:#20444b; color:#f1f7ef; }
+.menu-card button:disabled { color:#c0ceca; opacity:.65; }
+.menu-card .menu-primary { background:#efc37d; color:#172e32; border-color:#efc37d; font-weight:750; }
+.menu-card section>button { display:block; width:100%; margin-top:10px; }
+.menu-card .panel { background:transparent; color:#eff6ef; }
+.menu-card label,.menu-card .level { color:#d7e5db; }
+.menu-card .upgrade { background:#1a3940; border:1px solid #688581; color:#edf5ec; padding:16px; border-radius:10px; }
+.menu-card .upgrade h3 { color:#f1d29b; }
+.menu-card .upgrade p { color:#d0dfd9; }
+.menu-card .fish-card { background:#1a3940; color:#eef5ec; border:1px solid #688581; }
+.menu-card .fish-card span { color:#c9dbd4; }
+.menu-card input,.menu-card select { background:#20444b; color:#f3f5ef; border:1px solid #71918d; min-height:40px; max-width:100%; }
+.menu-card input::placeholder { color:#b9cbc4; }
+.menu-card .eyebrow { color:#f0c778; }
+.menu-link { display:block; padding:13px 10px; margin-top:14px; text-align:center; color:#f0c778; border:1px solid #8c9378; border-radius:10px; }
+.menu-heading { gap:12px; align-items:start; padding-bottom:12px; border-bottom:1px solid #486765; margin-bottom:20px; }
+.menu-heading p { margin:0; font-size:11px; letter-spacing:1px; color:#f0c778; }
+.menu-heading #closeMenu { flex-shrink:0; width:auto; margin:0; }
+.menu-card dl { display:grid; grid-template-columns:145px 1fr; gap:12px; }
+.menu-card dt { font-size:13px; color:#f1d29b; }
+.menu-card dd { margin:0; }
+#settingsSaveNote { border-top:1px solid #66857e; padding-top:15px; }
+#fishingQuickHint { margin:8px 0 0; color:#d3e2d9; font-size:11px; }
+#speciesEmpty { padding:16px; background:#20444b; border-radius:8px; }
+#saveNote { color:#dce8df; background:#102c34d9; border-radius:6px; padding:5px 8px; }
+.game-menu[aria-label="Stillwater home"] .menu-card { width:min(520px,100%); }
+.game-menu[aria-label="Stillwater home"] #menuContext { color:#f0c778; }
+@media(max-width:650px) {
+  .game-menu { inset:0; padding:12px; }
+  .menu-card { max-height:calc(100dvh - 24px); padding:18px; }
+  .menu-card h2 { font-size:27px; }
+  .menu-card dl { grid-template-columns:105px 1fr; }
+  .game-toolbar { top:56px; right:12px; max-width:none; }
+  #saveNote { display:none; }
+}
+@media(max-height:500px) {
+  .game-menu { inset:0; padding:8px; }
+  .menu-card { max-height:calc(100dvh - 16px); }
+  .menu-card h2 { font-size:24px; margin-bottom:12px; }
+  .game-toolbar { top:8px; right:110px; }
+}
+
+.menu-header-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.menu-header-actions button { font-size:12px; }

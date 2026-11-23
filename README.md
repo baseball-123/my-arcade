@@ -9,7 +9,7 @@ The new shooter validation lab is at `games/duels/`. From this repository folder
 
 The shooter now has two-player PeerJS rooms. Create a room, share the code, and have your friend join the same game version. Both enter the playtest for first-to-five duels. Internet friends need a hosted game URL; a localhost invite only works on your own computer. See [shooter multiplayer instructions](games/duels/README.md#multiplayer-with-a-friend).
 
-Open `index.html` to play Stillwater. All controls and menus are inside the game viewport.
+Open `index.html` to play Stillwater. The home screen offers Freeplay, Competition, and Sail with friends. Escape opens a pause hub with Shop, Collection, Settings, Controls, and Home. Competition ends with results and replay/freeplay actions. All controls and menus are inside the game viewport.
 
 - Arrow keys or WASD steer the boat or move the character, depending on the control mode.
 - Space jumps and switches to the character camera. F casts, hooks, and reels.

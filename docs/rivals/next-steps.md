@@ -1,5 +1,7 @@
 # Arcade Duels Next Steps
 
+The November 22 player-interface review is recorded in [Player Experience Audit and Plan](player-experience-plan.md). Use that screen-by-screen plan for the transition from the gameplay lab to the player-facing game, including navigation contrast, battle entry, lobby, pause, respawn, results, and connection recovery.
+
 Updated November 8, 2026
 
 Our next milestone is a prototype we can use to judge the player model, existing assets, and core gameplay. We will playtest movement and shooting, record specific problems, and improve the build through short feedback cycles. Accurate Arena reconstruction is the lowest priority while this validation is underway. The user has moved basic PeerJS multiplayer forward so two people can evaluate combat now.
@@ -8,11 +10,51 @@ Our next milestone is a prototype we can use to judge the player model, existing
 
 Basic two-player PeerJS rooms are implemented using Stillwater's networking patterns as the reference. Test with a friend now: create/join a room, enter the playtest, move and shoot, check health and round scores, and try leaving/rejoining. Full multiplayer polish follows these observations. This supersedes the earlier instruction to leave all multiplayer until the end. See [multiplayer instructions and limits](../../games/duels/README.md#multiplayer-with-a-friend).
 
+## Reported issues to address next
+
+These are user-reported findings from playtesting. All three are open; recording them does not mean a fix has been implemented or verified. Add future reports to this list with a stable issue number, then record the retest result after each fix.
+
+### ISSUE 001 Gun grip and positioning
+
+**Reported behavior:** The player does not appear to hold the gun. It sticks out of the character's armpit.
+
+**Next work:** Inspect the third-person character and weapon together. Align the gun with the hands, create an appropriate holding pose, and establish grip/attachment points for the selected weapon. Check aim direction and the relationship between the arms, shoulder and stock. Compare the result with RIVALS before deciding the final pose; inspect each existing gun rather than assuming one offset fits all of them.
+
+**Acceptance:** The hands visibly grip the weapon and the barrel points in the aim direction. The weapon stays attached naturally during idle, movement, aiming, crouching and weapon switches. Check both the local third-person view and the opponent's view in a multiplayer room. Inspect first-person alignment separately where applicable.
+
+- [ ] Inspect and reproduce the reported grip problem.
+- [ ] Correct weapon attachments and holding poses.
+- [ ] Retest with the existing guns and a second player.
+
+### ISSUE 002 Crouch appearance
+
+**Reported behavior:** Crouching looks unnatural. The desired appearance should be compared against the real Roblox RIVALS game.
+
+**Next work:** Observe RIVALS crouch entry, idle, movement and exit from multiple angles. Compare torso, arm and leg poses, body proportions, camera height, held-gun placement and transition timing. Use the current build to identify whether each difference is a pose, animation, camera or collision issue. Record the comparison before choosing changes; the exact reference behavior has not yet been verified.
+
+**Acceptance:** Crouching has a natural pose and smooth transitions consistent with the observed reference. Feet stay aligned with the ground, the character does not appear compressed or distorted, and the gun remains held correctly. Visual height, camera height and collision height agree. Both players see the crouch and stand transitions correctly.
+
+- [ ] Compare the current crouch against RIVALS.
+- [ ] Record the specific differences and correct the pose/transitions.
+- [ ] Retest stationary crouching, crouch movement, standing and multiplayer visibility.
+
+### ISSUE 003 Missing death animation
+
+**Reported behavior:** A player who has died still appears to stand there; no death animation is visible.
+
+**Next work:** Reproduce an elimination while observing both clients. Check how authoritative health, elimination events and the rendered character's animation/visibility interact. Preview the existing character's `die` clip before searching for another asset. If suitable, play it once on elimination and stop locomotion/holding animations from overriding it. Preserve the dead state until the round reset, then restore the living pose at the correct spawn.
+
+**Acceptance:** Both players can clearly see that the eliminated character has died. The death animation plays once, the character does not return to idle or stand before the round reset, and the next round restores the character cleanly. Dead players cannot move or shoot during this transition. Confirm whether a corpse remains visible or is removed after the animation as part of the implementation decision.
+
+- [ ] Reproduce the missing death animation in a two-player room.
+- [ ] Inspect the existing death clip and connect the elimination/death/reset states.
+- [ ] Retest death visibility, disabled actions and respawn on both clients.
+
 ## Where we are now
 
 The current local build contains a rough Arena-like layout, seven gun models, targets, first-person play, a third-person character view, and an asset inspector. Movement, sliding, jumping, aiming, firing, reloading, and live tuning are implemented as prototype features.
 
-Earlier browser checks confirmed loading, basic movement, jumping, ammunition consumption, target hits, reload completion, and character visibility. Full mouse-control feel, slide and ramp behavior, weapon grips, and similarity to RIVALS still need hands-on validation. Existing tests cover Stillwater audio and multiplayer; they do not establish that the new shooter feels correct.
+Earlier browser checks confirmed loading, basic movement, jumping, ammunition consumption, target hits, reload completion, and character visibility. Full mouse-control feel, slide and ramp behavior, weapon grips, and similarity to RIVALS still need hands-on validation. Existing tests cover Stillwater and shooter multiplayer rules; they do not establish that character poses or animations look correct.
 
 Weapon values, the proposed twelve-item launch roster, bots, and match rules remain adjustable proposals. We should settle these through playtesting rather than treat the earlier specification as fixed.
 
@@ -20,7 +62,7 @@ Weapon values, the proposed twelve-item launch roster, bots, and match rules rem
 
 Use desktop Edge or Chrome for captured mouse input. The embedded browser's drag-to-look fallback is useful for inspection but cannot establish normal FPS mouse feel.
 
-1. Start the local server if needed. From the repository folder, run `python -m http.server 8081 --bind 127.0.0.1` and open [the gameplay lab](http://127.0.0.1:8081/games/duels/).
+1. Open [the published game](https://baseball-123.github.io/my-arcade/games/duels/) and join a friend for multiplayer checks. For local development, run `python -m http.server 8081 --bind 127.0.0.1` from the repository folder and open [the local gameplay lab](http://127.0.0.1:8081/games/duels/).
 2. Enter the playtest with the default settings. Move, strafe, stop, jump, slide, and traverse both ramps before changing any values.
 3. Fire the Assault Rifle at stationary and moving targets. Test aiming, recoil, hit feedback, empty-magazine behavior, and reloading.
 4. Try each remaining gun. Note which differences feel useful and which mechanics feel wrong or unfinished.
@@ -83,9 +125,9 @@ Weapon and tuning values:
 
 | Priority | Action or asset tested | What happened | What we want instead | Next change | Retest result |
 | --- | --- | --- | --- | --- | --- |
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
+| 1 | ISSUE 001 Gun grip | Gun appears to stick out of the player's armpit | Hands visibly hold the weapon | Inspect attachments and holding poses | Open |
+| 2 | ISSUE 002 Crouching | Crouch appearance looks unnatural | Natural crouch informed by real RIVALS observation | Compare poses and transitions against the reference | Open |
+| 3 | ISSUE 003 Death | Eliminated player appears to remain standing without an animation | Visible death followed by a clean round reset | Inspect the existing death clip and multiplayer animation states | Open |
 
 Use reproducible descriptions such as “jumping from the left ramp clips into the cover block” instead of “movement feels bad.” For feel differences, describe the action, the direction of the difference, and the setting that might address it.
 
@@ -102,11 +144,11 @@ Use reproducible descriptions such as “jumping from the left ramp clips into t
 
 After the first session, choose a small batch from the findings. Fix issues that block play first, then movement and shooting feel, then asset fit and presentation. Retest the same actions after each batch and update this document with the result.
 
-- [ ] First task:
-- [ ] Second task:
-- [ ] Third task:
+- [ ] ISSUE 001 Correct the gun grip and weapon positioning.
+- [ ] ISSUE 002 Compare crouching with RIVALS and correct the observed differences.
+- [ ] ISSUE 003 Add a visible death animation and correct the death-to-respawn transition.
 
-The immediate next action is to play the current build and fill in the first three findings. Further model collection and detailed Arena measurements follow the evidence from that session.
+The immediate next action is to reproduce these three reported issues with two players and inspect the existing poses/clips. Continue recording new findings as they arrive. Further model collection and detailed Arena measurements follow the evidence from playtesting.
 
 ## Related documents
 

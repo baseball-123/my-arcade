@@ -1,0 +1,68 @@
+/* Player-facing surfaces keep readable contrast over the arena. */
+body { --panel:#162427; --muted:#b7c7c7; }
+#menu { max-width:850px; margin:110px auto 80px; padding:0 24px; pointer-events:auto; }
+#home-intro { background:#142326ed; padding:26px; border-radius:14px 14px 0 0; text-shadow:none; }
+#home-intro h1 { font-size:52px; }
+#home-intro p { color:#d0ded9; }
+#home-actions { max-width:none; border-radius:0 0 14px 14px; }
+#home-actions h2 { margin:0; font-size:19px; }
+#home-actions .primary { justify-content:center; font-size:16px; }
+#home-actions .secondary { font-size:14px; }
+.player-nav, .tabs { background:#142326; border:1px solid #455f61; border-radius:10px; padding:8px; display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; width:auto; }
+.player-nav button, .tabs button { color:#edf5ef; background:#243a3e; border:1px solid #5c7475; padding:10px 16px; border-radius:6px; font-size:13px; }
+.tabs button.active { background:#d5f586; border-color:#d5f586; color:#18271b; }
+.panels { display:block; }
+.panel { background:#162427f5; backdrop-filter:blur(12px); max-width:none; margin-top:14px; }
+.multiplayer { max-width:none; }
+.panel label { display:block; margin:16px 0 8px; color:#d8e6e1; font-size:13px; }
+.multiplayer .room-actions { max-width:none; }
+.fine { color:#b7c7c7; font-size:12px; }
+#screen-heading { background:#142326f5; padding:20px; border-radius:10px; margin-top:16px; }
+#screen-heading h1 { font-size:32px; margin-bottom:0; }
+#screen-back { padding:7px 12px; }
+body[data-screen="lobby"] #player-name, body[data-screen="lobby"] label[for=player-name] { display:none; }
+body[data-screen="lobby"] .room-actions:first-of-type { display:none; }
+body[data-screen="owner"] .tuning { display:block; }
+body[data-screen="owner"] .setting-row { display:flex; }
+body.inspecting #menu { max-width:850px; }
+body.inspecting .intro { visibility:visible; }
+dialog { max-height:calc(100dvh - 32px); overflow:auto; width:min(480px,calc(100% - 28px)); padding:26px; border:1px solid #658181; border-radius:14px; background:#162427; color:#edf5ef; }
+dialog::backdrop { background:#081215c9; backdrop-filter:blur(5px); }
+dialog h1 { font-size:30px; margin:0 0 18px; letter-spacing:-1px; }
+dialog p { line-height:1.7; }
+dialog label { display:block; margin:16px 0 7px; }
+dialog button { min-height:42px; }
+dialog table { width:100%; border-collapse:collapse; text-align:left; }
+dialog th,dialog td { padding:10px 6px; border-bottom:1px solid #52666a; overflow-wrap:anywhere; }
+dialog td:last-child { width:80px; text-align:right; }
+dl { display:grid; grid-template-columns:130px 1fr; gap:14px; } dt { color:#d5f586; } dd { margin:0; }
+#info-content>a { display:block; margin-top:16px; }
+#fps,.movement-readout,#session-stats { display:none; }
+body[data-screen="owner"] #fps { display:block; }
+#room-players { padding:14px; background:#0c191c; border-radius:7px; overflow-wrap:anywhere; }
+#duel-banner { max-width:min(600px,90vw); } #duel-score { white-space:normal!important; overflow-wrap:anywhere; }
+#combat-state { font-size:11px; background:#142326; padding:7px; color:#d5f586; width:fit-content; }
+#combat-state:empty { display:none; }
+#loading a { display:block; margin-top:22px; }
+#loading button { margin-top:20px; }
+input,select,button { min-height:36px; }
+#footer { letter-spacing:.4px; }
+body.playing .player-nav { display:none; }
+#lobby-preparation { border-top:1px solid #52666a; margin-top:20px; padding-top:10px; }
+@media(max-width:620px) {
+  #menu { margin-top:90px; padding:0 12px; }
+  #home-intro h1 { font-size:38px; }
+  .panels { max-width:none; }
+  .tuning { display:block; }
+  .player-nav button { flex:1; }
+  .topbar { padding:0 12px; }
+  #screen-heading { padding:14px; }
+  #info-content dl { grid-template-columns:100px 1fr; }
+}
+@media(max-height:600px) { #menu { margin-top:85px; } #home-intro { padding:18px; } #home-intro h1 { font-size:34px; } }
+
+body[data-screen="battle"] #play-panel > :not(#start) { display:none; }
+body[data-screen="battle"] #start { margin:0; }
+body[data-screen="battle"] .player-nav { display:none; }
+body[data-screen="owner"] .tuning { display:block!important; }
+body:not([data-screen="owner"]) #lab-panel { display:none!important; }
